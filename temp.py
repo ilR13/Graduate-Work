@@ -8,6 +8,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPainter, QPixmap
 
 
+
 def get_color():
     return [randint(1, 10) * 25 for _ in range(3)]
 

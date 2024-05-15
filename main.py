@@ -8,6 +8,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPainter, QPixmap
 
 
+
 class Game():
     def __init__(self):
         pygame.display.init()
