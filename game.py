@@ -31,10 +31,12 @@ class Label(Area):
 class Game():
     def __init__(self):
         pygame.display.init()
+        pygame.font.init()
         self.screen = pygame.display.set_mode((gamewin[0], gamewin[1]))
         self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
         self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
-
+        self.button = Label(self.screen,0,0,100,50,(255,0,0))
+        self.button.set_text("Button")
         self.rect = self.player.get_rect()
         self.rect.x = 150
         self.rect.y = 0
@@ -47,6 +49,7 @@ class Game():
                 exit()
         self.screen.blit(self.background, (150, 0))
         self.screen.blit(self.player, (self.rect.x, self.rect.y))
+        self.button.draw(30,15)
         pygame.display.update()
 
 
