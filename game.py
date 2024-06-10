@@ -42,6 +42,7 @@ class Game():
         self.rect.y = 0
 
 
+
     def loop(self):
         for event in pygame.event.get():
             if event.type == QUIT:
