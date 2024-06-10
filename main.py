@@ -36,9 +36,6 @@ class Game():
         for i in range(50):
             self.rect.x += 1
 
-
-
-
 class GameWidget(QWidget):
     def __init__(self):
         super().__init__()

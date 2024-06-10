@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONDOWN
 from pygame.event import Event, post
 from random import randint
-
+import time
 gamewin = (850, 700)
 
 class Area():
@@ -32,31 +32,84 @@ class Game():
     def __init__(self):
         pygame.display.init()
         pygame.font.init()
+        self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((gamewin[0], gamewin[1]))
         self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
         self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
-        self.button = Label(self.screen,0,0,100,50,(255,0,0))
-        self.button.set_text("Button")
+        self.direction = 90
+        self.button_forward = Label(self.screen,0,0,100,50,(255,0,0))
+        self.button_forward.set_text("forward")
+        self.button_right = Label(self.screen,0,55,100,50,(255,0,0))
+        self.button_right.set_text("right")
+        self.button_left = Label(self.screen,0,110,100,50,(255,0,0))
+        self.button_left.set_text("left")
         self.rect = self.player.get_rect()
         self.rect.x = 150
         self.rect.y = 0
-
-
+        self.moving = False
 
     def loop(self):
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 exit()
+            if event.type == MOUSEBUTTONDOWN and event.button ==1:
+                x, y = event.pos
+                if self.button_forward.collidepoint(x, y):
+                    #self.forward()
+                    self.moving = True
+                elif self.button_right.collidepoint(x, y):
+                    self.rotate(90)
+                elif self.button_left.collidepoint(x, y):
+                    self.rotate(-90)
+
+            if event.type == pygame.MOUSEMOTION:
+                if self.moving:
+                    x_new, y_new = event.rel
+                    self.button_forward.rect.x = self.button_forward.rect.x + x_new
+                    self.button_forward.rect.y = self.button_forward.rect.y + y_new
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self.moving = False
+        self.update()
+
+    def update(self):
         self.screen.blit(self.background, (150, 0))
         self.screen.blit(self.player, (self.rect.x, self.rect.y))
-        self.button.draw(30,15)
+        self.button_forward.draw(30, 15)
+        self.button_left.draw(30, 15)
+        self.button_right.draw(30, 15)
+        self.clock.tick(40)
         pygame.display.update()
 
-
     def forward(self):
+        if self.direction % 360 == 90:
+            x = 1
+            y = 0
+        elif self.direction % 360 == 180:
+            x = 0
+            y = 1
+        elif self.direction % 360 == 270:
+            x = -1
+            y = 0
+        elif self.direction % 360 == 0:
+            x = 0
+            y = -1
         for i in range(50):
-            self.rect.x += 1
+            self.rect.x += x
+            self.rect.y += y
+            self.update()
+        time.sleep(0.3)
+    def rotate(self,direction ):
+        self.direction += direction
+        if self.direction % 360 == 90:
+            self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
+        elif self.direction % 360 == 180:
+            self.player = pygame.transform.scale(pygame.image.load("низ.png"), (50, 50))
+        elif self.direction % 360 == 270:
+            self.player = pygame.transform.scale(pygame.image.load("лево.png"), (50, 50))
+        elif self.direction % 360 == 0:
+            self.player = pygame.transform.scale(pygame.image.load("верх.png"), (50, 50))
+        self.update()
 
 Game = Game()
 
