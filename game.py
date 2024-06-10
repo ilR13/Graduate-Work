@@ -35,6 +35,7 @@ class Game():
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((gamewin[0], gamewin[1]))
         self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
+        self.background_left = self.rect = pygame.Rect(0, 0, 150, gamewin[1])
         self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
         self.direction = 90
         self.button_forward = Label(self.screen,0,0,100,50,(255,0,0))
@@ -58,6 +59,7 @@ class Game():
                 if self.button_forward.collidepoint(x, y):
                     #self.forward()
                     self.moving = True
+                    #del self.button_forward
                 elif self.button_right.collidepoint(x, y):
                     self.rotate(90)
                 elif self.button_left.collidepoint(x, y):
@@ -74,6 +76,7 @@ class Game():
 
     def update(self):
         self.screen.blit(self.background, (150, 0))
+        pygame.draw.rect(self.screen, (0,0,255), self.background_left)
         self.screen.blit(self.player, (self.rect.x, self.rect.y))
         self.button_forward.draw(30, 15)
         self.button_left.draw(30, 15)
