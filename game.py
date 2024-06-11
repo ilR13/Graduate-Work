@@ -44,6 +44,10 @@ class Game():
         self.background_middle = self.rect = pygame.Rect(150, 0, 500, gamewin[1])
         self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
         self.direction = 90
+
+        self.startbtn = Label(self.screen, 350, 0, 100, 50, (255, 0, 0), self.start)
+        self.startbtn.set_text("start")
+
         self.button_forward = Label(self.screen,0,0,100,50,(255,0,0),self.forward)
         self.button_forward.set_text("forward")
         self.button_right = Label(self.screen,0,55,100,50,(255,0,0),self.rotate)
@@ -54,6 +58,10 @@ class Game():
         self.rect.x = 650
         self.rect.y = 0
         self.moving = False
+        self.movingobj = None
+        self.buttons =[self.button_forward,self.button_right,self.button_left]
+
+        self.additional_buttons = [self.startbtn]
 
     def loop(self):
         for event in pygame.event.get():
@@ -63,25 +71,36 @@ class Game():
             if event.type == MOUSEBUTTONDOWN and event.button ==1:
                 x, y = event.pos
                 if self.button_forward.collidepoint(x, y):
-                    #self.forward()
-                    self.button_forward.function()
-                    #self.moving = True
-                    #del self.button_forward
-                elif self.button_right.collidepoint(x, y):
-                    self.button_right.function(90)
-                elif self.button_left.collidepoint(x, y):
-                    self.button_left.function(-90)
+                    button_fw = Label(self.screen, 0, 0, 100, 50, (255, 0, 0), self.forward)
+                    button_fw.set_text("forward")
+                    self.additional_buttons.append(button_fw)
 
+                elif self.button_right.collidepoint(x, y):
+                    button_r = Label(self.screen, 0, 55, 100, 50, (255, 0, 0), self.forward)
+                    button_r.set_text("right")
+                    self.additional_buttons.append(button_r)
+
+                elif self.button_left.collidepoint(x, y):
+                    button_l = Label(self.screen, 0, 110, 100, 50, (255, 0, 0), self.forward)
+                    button_l.set_text("left")
+                    self.additional_buttons.append(button_l)
+
+
+                for button in self.additional_buttons:
+                    if button.collidepoint(x,y):
+                        self.moving = True
+                        self.movingobj = button
             if event.type == pygame.MOUSEMOTION:
                 if self.moving:
                     x_new, y_new = event.rel
-                    self.button_forward.rect.x = self.button_forward.rect.x + x_new
-                    self.button_forward.rect.y = self.button_forward.rect.y + y_new
+                    self.movingobj.rect.x = self.movingobj.rect.x + x_new
+                    self.movingobj.rect.y = self.movingobj.rect.y + y_new
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 self.moving = False
-                if not(self.button_forward.colliderect(self.background_middle)):
-                    self.button_forward.rect.x = 0
-                    self.button_forward.rect.y = 0
+                for button in self.additional_buttons:
+                    if not(button.colliderect(self.background_middle)):
+                        self.additional_buttons.remove(button)
+                        del button
         self.update()
 
     def update(self):
@@ -89,12 +108,17 @@ class Game():
         pygame.draw.rect(self.screen,(0,255,0),self.background_middle)
         pygame.draw.rect(self.screen, (0,0,255), self.background_left)
         self.screen.blit(self.player, (self.rect.x, self.rect.y))
-        self.button_forward.draw(30, 15)
-        self.button_left.draw(30, 15)
-        self.button_right.draw(30, 15)
+        # self.button_forward.draw(30, 15)
+        # self.button_left.draw(30, 15)
+        # self.button_right.draw(30, 15)
+        for button in self.buttons:
+            button.draw(30,15)
+        for button in self.additional_buttons:
+            button.draw(30,15)
         self.clock.tick(40)
         pygame.display.update()
-
+    def start(self):
+        pass
     def forward(self):
         if self.direction % 360 == 90:
             x = 1
