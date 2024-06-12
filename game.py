@@ -38,7 +38,7 @@ class Game():
         pygame.display.init()
         pygame.font.init()
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((gamewin[0], gamewin[1]))
+        self.screen = pygame.display.set_mode(gamewin)
         self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
 
         self.background_left = self.rect = pygame.Rect(0, 0, 120, gamewin[1])
@@ -178,7 +178,8 @@ class Game():
             self.player = pygame.transform.scale(pygame.image.load("верх.png"), (50, 50))
         self.update()
 
-Game = Game()
 
-while True:
-    Game.loop()
+# Game = Game()
+#
+# while True:
+#     Game.loop()
