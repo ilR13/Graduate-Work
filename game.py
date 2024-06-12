@@ -58,7 +58,7 @@ class Game():
 
         self.rect = self.player.get_rect()
         self.rect.x = 620
-        self.rect.y = 0
+        self.rect.y = 100
         self.moving = False
         self.movingobj = None
         self.buttons =[self.button_forward,self.button_right,self.button_left]
@@ -139,14 +139,24 @@ class Game():
         self.screen.blit(self.player, (self.rect.x, self.rect.y))
         self.clock.tick(40)
         pygame.display.update()
-    def start(self):
-        print("start")
+
+    def conectblock(self):
         algoritm = []
+
         for block1 in range(len(self.additional_buttons) - 1):
+            flag = True
             for block2 in self.additional_buttons:
                 if self.additional_buttons[block1].rect.bottom == block2.rect.top:
                     algoritm.append(block2)
+                    flag = False
+            if flag:
+                return algoritm
+        return  algoritm
+    def start(self):
+        algoritm =  self.conectblock()
+
         for i in algoritm:
+            print(i.text)
             i.function()
     def forward(self):
         if self.direction % 360 == 90:
