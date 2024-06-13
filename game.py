@@ -34,8 +34,65 @@ class Label(Area):
       self.mw.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))
 
 
+class Whilebut(Label):
+    def __init__(self, mw, x, y, width, height, color, function,):
+        super().__init__( mw, x, y, width, height, color, function)
+        self.count = 1
+        self.button_whiletxt = Label(self.mw, x + 35, y, 10, 10,color, None, )
+        self.button_whiletxt.set_text("1")
+
+        self.button_whileup = Label(self.mw, x + 80, y, 20, 30,(255, 250, 0), self.plus, )
+        self.button_whileup.set_text("+")
+
+        self.button_whiledown = Label(self.mw, x, y, 20,30, (255, 250, 0), self.minus, )
+        self.button_whiledown.set_text("−")
+
+    def plus(self):
+        self.count +=1
+        self.button_whiletxt.set_text(str(self.count))
+    def minus(self):
+        self.count -=1
+        if self.count <=0:
+            self.count = 1
+        self.button_whiletxt.set_text(str(self.count))
+    def draw(self, shift_x=0, shift_y=0):
+        super().draw(shift_x,shift_y)
+
+        self.button_whiletxt.rect.x = self.rect.x + 35
+        self.button_whiletxt.rect.y = self.rect.y
+        self.button_whileup.rect.x = self.rect.x + 80
+        self.button_whileup.rect.y = self.rect.y
+        self.button_whiledown.rect.x = self.rect.x
+        self.button_whiledown.rect.y = self.rect.y
 
 
+        self.button_whiletxt.draw(30,7)
+        self.button_whileup.draw(5,5)
+        self.button_whiledown.draw(5,5)
+
+class Cycle():
+    def __init__(self, buttons, iters):
+        self.iters = iters
+        self.res = self.parse(buttons)
+    def function(self):
+        for j in range(self.iters):
+            for i in self.res:
+                i.function()
+    def parse(self, buttons):
+        res = []
+
+        for i in buttons:
+            if i.text == "while":
+                x = Cycle(buttons, i.count)
+                res.append(x)
+
+            elif i.text == "  end":
+                return res
+            else:
+                res.append(i)
+
+
+        return res
 class Game():
     def __init__(self):
         pygame.display.init()
@@ -64,7 +121,7 @@ class Game():
         self.button_while.set_text("while")
 
         self.button_whiletxt = Label(self.screen, self.button_while.rect.x+35, self.button_while.rect.y, 10, 10, self.button_while.fill_color, None, )
-        self.button_whiletxt.set_text("0")
+        self.button_whiletxt.set_text("1")
 
         self.button_whileup = Label(self.screen, self.button_while.rect.x+80, self.button_while.rect.y, 20, 30, (255, 250, 0),  None,)
         self.button_whileup.set_text("+")
@@ -91,6 +148,15 @@ class Game():
             if event.type == QUIT:
                 pygame.quit()
                 exit()
+            if event.type == MOUSEBUTTONDOWN and event.button == 3:
+                x,y = event.pos
+                for button in self.additional_buttons:
+                    if button.__class__.__name__ == "Whilebut":
+                        if button.button_whileup.collidepoint(x,y):
+                            button.button_whileup.function()
+                        elif button.button_whiledown.collidepoint(x,y):
+                            button.button_whiledown.function()
+
             if event.type == MOUSEBUTTONDOWN and event.button ==1:
                 x, y = event.pos
                 if self.button_forward.collidepoint(x, y):
@@ -112,25 +178,21 @@ class Game():
                     self.start()
 
                 elif self.button_while.collidepoint(x,y):
-                    button_while = Label(self.screen, 10, 165, 100, 30, (255, 0, 0), None)
+                    button_while = Whilebut(self.screen, 10, 165, 100, 30, (255, 0, 0), lambda: None)
                     button_while.set_text("while")
-
-                    button_whiletxt = Label(self.screen, self.button_while.rect.x + 35, self.button_while.rect.y,10, 10, self.button_while.fill_color, None, )
-                    button_whiletxt.set_text("0")
-
-                    button_whileup = Label(self.screen, self.button_while.rect.x + 80, self.button_while.rect.y,20, 30, (255, 250, 0), None, )
-                    button_whileup.set_text("+")
-
-                    button_whiledown = Label(self.screen, self.button_while.rect.x, self.button_while.rect.y, 20,30, (255, 250, 0), None, )
-                    button_whiledown.set_text("−")
-
                     self.additional_buttons.append(button_while)
+
+                elif self.button_end.collidepoint(x,y):
+                    button_end = Label(self.screen, 10, 220, 100, 30, (255, 0, 0), lambda: None)
+                    button_end.set_text("  end")
+                    self.additional_buttons.append(button_end)
 
                 for button in self.additional_buttons:
                     if button != self.startbtn:
                         if button.collidepoint(x,y):
                             self.moving = True
                             self.movingobj = button
+                            break
             if event.type == pygame.MOUSEMOTION:
                 if self.moving:
                     if not(self.movingobj == self.startbtn):
@@ -156,14 +218,15 @@ class Game():
                 self.moving = False
 
         self.update()
+    def wloop (self):
+        pass
+
+
 
     def update(self):
 
         pygame.draw.rect(self.screen,(0,255,0),self.background_middle)
 
-        # self.button_forward.draw(30, 15)
-        # self.button_left.draw(30, 15)
-        # self.button_right.draw(30, 15)
         for button in self.additional_buttons:
             button.draw(30,7)
         self.additional_buttons[0].outline((0,0,0),5)
@@ -181,22 +244,31 @@ class Game():
 
     def conectblock(self):
         algoritm = []
-
-        for block1 in range(len(self.additional_buttons) - 1):
+        block1 = self.additional_buttons[0]
+        for i in range(len(self.additional_buttons)):
             flag = True
             for block2 in self.additional_buttons:
-                if self.additional_buttons[block1].rect.bottom == block2.rect.top:
+                if block1.rect.bottom == block2.rect.top:
                     algoritm.append(block2)
+                    block1 = self.additional_buttons[self.additional_buttons.index(block2)]
                     flag = False
             if flag:
                 return algoritm
         return  algoritm
     def start(self):
         algoritm =  self.conectblock()
+        # i=0
+        # while i <len(algoritm):
+        #     if algoritm[i].text == "while":
+        #         x = Cycle(algoritm[i + 1:], algoritm[i].count)
+        #         i += len(x.res)
+        #         x.function()
+        #     print(algoritm[i].text)
+        #     algoritm[i].function()
+        #     i+=1
+        x = Cycle(iter(algoritm),1)
+        x.function()
 
-        for i in algoritm:
-            print(i.text)
-            i.function()
     def forward(self):
         if self.direction % 360 == 90:
             x = 1
