@@ -1,9 +1,32 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QSizePolicy, QLabel
-#import game
+from enum import Enum
+
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QSizePolicy, QLabel,QMessageBox
+import game
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPainter
 
+class Map(Enum):
+    empty = "пол.png"
+    coin = "монета.png"
+    wall = "wall.jpg"
+    fin = "finish.png"
 
+
+
+lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.fin, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, ],]
 
 class GameWidget(QWidget):
     def __init__(self):
@@ -54,9 +77,13 @@ class GameWidget(QWidget):
         self.setLayout(main_layout)
     def test(self):
         #self.closeEvent()
+        info = QMessageBox()
+        info.setText("game and level information")
+        info.exec()
         self.hide()
-        Game = game.Game()
 
+        Game = game.Game()
+        Game.drawmap(lvl1, 670, 50)
         while True:
             Game.loop()
 

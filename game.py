@@ -6,28 +6,28 @@ from random import randint
 import time
 gamewin = (1320, 700)
 
-class Map(Enum):
-    empty = "пол.png"
-    coin = "монета.png"
-    wall = "wall.jpg"
-    fin = "finish.png"
-
-
-
-lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.fin, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, ],]
+# class Map(Enum):
+#     empty = "пол.png"
+#     coin = "монета.png"
+#     wall = "wall.jpg"
+#     fin = "finish.png"
+#
+#
+#
+# lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.fin, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+#         [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, ],]
 
 
 
@@ -43,6 +43,7 @@ class Area():
       self.function = function
       self.pic = pic
 
+
   def color(self, new_color):
       self.fill_color = new_color
   def fill(self):
@@ -57,9 +58,9 @@ class Area():
   def drawpic(self):
       #self.rect = self.obj.get_rect()
       self.mw.blit(self.obj, (self.rect.x, self.rect.y))
-  def setpic(self,pic):
+  def setpic(self,pic,widht=50,height=50):
       self.pic = pic
-      self.obj = pygame.transform.scale(pygame.image.load(self.pic), (50, 50))
+      self.obj = pygame.transform.scale(pygame.image.load(self.pic), (widht, height))
 
 '''класс надпись'''
 class Label(Area):
@@ -69,7 +70,11 @@ class Label(Area):
       self.image = pygame.font.SysFont('verdana', fsize).render(text, True, text_color)
 
   def draw(self, shift_x=0, shift_y=0):
-      self.fill()
+      #self.fill()
+      try:
+        self.drawpic()
+      except:
+          pass
       self.mw.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))
 
 
@@ -189,18 +194,25 @@ class Game():
         self.direction = 90
 
         self.startbtn = Label(self.screen, 325, 0, 100, 30, (255, 0, 0), self.start)
+        self.startbtn.setpic("оранжевый.png",100,30)
         self.startbtn.set_text("  start")
 
-        self.button_forward = Label(self.screen,10,0,100,30,(255,0,0),self.forward)
+        self.button_forward = Label(self.screen,10,0,100,30,None,self.forward,)
         self.button_forward.set_text("forward")
+        self.button_forward.setpic("зелёный.png",100,30)
+
         self.button_right = Label(self.screen,10,55,100,30,(255,0,0),self.rotate)
         self.button_right.set_text("  right")
+        self.button_right.setpic("оранжевый.png", 100, 30)
+
         self.button_left = Label(self.screen,10,110,100,30,(255,0,0),self.rotate)
         self.button_left.set_text("  left")
 
+        self.button_left.setpic("оранжевый.png", 100, 30)
 
         self.button_while = Label(self.screen, 10, 165, 100, 30, (255, 0, 0))
         self.button_while.set_text("while")
+        self.button_while.setpic("фиолетовый.png", 100, 30)
 
         self.button_whiletxt = Label(self.screen, self.button_while.rect.x+35, self.button_while.rect.y, 10, 10, self.button_while.fill_color )
         self.button_whiletxt.set_text("1")
@@ -213,9 +225,11 @@ class Game():
 
         self.button_end = Label(self.screen, 10, 220, 100, 30, (255, 0, 0) )
         self.button_end.set_text("  end")
+        self.button_end.setpic("фиолетовый.png",100,30)
 
         self.button_clear = Label(self.screen, 10, gamewin[1]-50, 100, 30, (255, 0, 0), self.clear)
         self.button_clear.set_text("clear")
+        self.button_clear.setpic("синий.png",100,30)
 
 
         self.moving = False
@@ -226,7 +240,7 @@ class Game():
         self.monee = []
         self.map = []
         self.wall =[]
-        self.drawmap(lvl1,670,50)
+
 
     def loop(self):
         for event in pygame.event.get():
@@ -247,16 +261,19 @@ class Game():
                 if self.button_forward.collidepoint(x, y):
                     button_fw = Label(self.screen, 0, 0, 100, 30, (255, 0, 0), self.forward)
                     button_fw.set_text("forward")
+                    button_fw.setpic("зелёный.png",100,30)
                     self.additional_buttons.append(button_fw)
 
                 elif self.button_right.collidepoint(x, y):
                     button_r = Label(self.screen, 0, 55, 100, 30, (255, 0, 0), lambda: self.rotate(90))
                     button_r.set_text("  right")
+                    button_r.setpic("оранжевый.png",100,30)
                     self.additional_buttons.append(button_r)
 
                 elif self.button_left.collidepoint(x, y):
                     button_l = Label(self.screen, 0, 110, 100, 30, (255, 0, 0), lambda: self.rotate(-90))
                     button_l.set_text("  left")
+                    button_l.setpic("оранжевый.png", 100, 30)
                     self.additional_buttons.append(button_l)
 
                 elif self.startbtn.collidepoint(x,y):
@@ -265,11 +282,15 @@ class Game():
                 elif self.button_while.collidepoint(x,y):
                     button_while = Whilebut(self.screen, 10, 165, 100, 30, (255, 0, 0), lambda: None)
                     button_while.set_text("while")
+                    button_while.setpic("фиолетовый.png", 100, 30)
                     self.additional_buttons.append(button_while)
+
 
                 elif self.button_end.collidepoint(x,y):
                     button_end = Label(self.screen, 10, 220, 100, 30, (255, 0, 0), lambda: None)
                     button_end.set_text("  end")
+                    button_end.setpic("фиолетовый.png", 100, 30)
+
                     self.additional_buttons.append(button_end)
                 elif self.button_clear.collidepoint(x,y):
                     self.button_clear.function()
@@ -311,11 +332,11 @@ class Game():
         self.additional_buttons =[self.startbtn]
     def update(self):
 
-        pygame.draw.rect(self.screen,(0,255,0),self.background_middle)
+        pygame.draw.rect(self.screen,(50,55,50),self.background_middle)
 
         for button in self.additional_buttons:
             button.draw(30,7)
-        self.additional_buttons[0].outline((0,0,0),5)
+
         #self.screen.blit(self.background, (620, 0))
 
         pygame.draw.rect(self.screen, (0, 0, 255), self.background_left)
@@ -434,8 +455,8 @@ class Game():
             self.player.setpic("верх.png")
         self.update()
 
-
-Game = Game()
-
-while True:
-    Game.loop()
+#
+# Game = Game()
+#
+# while True:
+#     Game.loop()
