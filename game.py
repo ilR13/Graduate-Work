@@ -108,6 +108,7 @@ class Game():
         pygame.font.init()
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(gamewin)
+        self.money = 0
         self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
 
         self.background_left = self.rect = pygame.Rect(0, 0, 120, gamewin[1])
@@ -120,6 +121,11 @@ class Game():
         self.wall.setpic("wall.jpg")
         self.fin = Area(self.screen,720,150,50,50,None,lambda :None,)
         self.fin.setpic("finish.png")
+        self.mone = Area(self.screen,670,150,50,50,None,lambda :None,)
+        self.mone.setpic("монета.png")
+        self.floor = Area(self.screen,720,50,50,50,None,lambda :None,)
+        self.floor.setpic("пол.png")
+
 
         self.direction = 90
 
@@ -152,15 +158,13 @@ class Game():
         self.button_clear = Label(self.screen, 10, gamewin[1]-50, 100, 30, (255, 0, 0), self.clear)
         self.button_clear.set_text("clear")
 
-        #self.rect = self.player.get_rect()
-        # self.rect.x = 620
-        # self.rect.y = 100
+
         self.moving = False
         self.movingobj = None
         self.buttons =[self.button_forward,self.button_right,self.button_left,self.button_while,self.button_end,self.button_whiletxt, self.button_clear]
         self.buttonswhile =[self.button_whileup,self.button_whiledown]
         self.additional_buttons = [self.startbtn]
-        self.map =[self.wall,self.fin,self.player]
+        self.map =[self.mone,self.wall,self.fin,self.floor,self.player]
 
 
     def loop(self):
@@ -275,12 +279,17 @@ class Game():
             self.show_message("Попробуй снова")
             time.sleep(2)  # Задержка на 2 секунды
             self.update()  # Обновляем экран, чтобы убрать сообщение
+            self.player.setpic("право.png")
             return True
         elif self.player.colliderect(self.fin):
-            self.show_message("Win")
+            self.show_message("Win money "+str(self.money))
             time.sleep(2)  # Задержка на 2 секунды
             self.update()  # Обновляем экран, чтобы убрать сообщение
+            self.player.setpic("право.png")
             return True
+        elif self.player.colliderect(self.mone):
+            self.money+=1
+            del self.mone
 
     def show_message(self, text):
         # Создаём поверхность с сообщением
