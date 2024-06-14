@@ -1,9 +1,39 @@
+from enum import Enum
 import pygame
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONDOWN
 from pygame.event import Event, post
 from random import randint
 import time
 gamewin = (1320, 700)
+
+class Map(Enum):
+    empty = "пол.png"
+    coin = "монета.png"
+    wall = "wall.jpg"
+    fin = "finish.png"
+
+
+
+lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.fin, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, ],]
+
+
+
+
+
+
 
 class Area():
   def __init__(self, mw, x, y, width, height, color, function =lambda:None, pic=None):
@@ -103,28 +133,57 @@ class Cycle():
 
         return res
 class Game():
+    def drawmap(self, lvl, x=0,y=0):
+        self.player = Area(self.screen, x, y, 50, 50, None, lambda: None, )
+        self.player.setpic("право.png")
+        x,y = self.background_middle.topright
+        for row in lvl:
+            for block in row:
+                objfloor = Area(self.screen, x, y, 50, 50, None, lambda: None, )
+                objfloor.setpic("пол.png")
+                self.map.append(objfloor)
+                if block.value == "finish.png":
+                    self.fin = Area(self.screen, x, y, 50, 50, None, lambda: None, )
+                    self.fin.setpic("finish.png")
+                    x += 50
+                    continue
+                obj = Area(self.screen, x, y, 50, 50, None, lambda: None, )
+                obj.setpic(block.value)
+                if block.value == "монета.png":
+                    self.monee.append(obj)
+                elif block.value == "wall.jpg":
+                    self.wall.append(obj)
+
+                x+=50
+            x=self.background_middle.topright[0]
+            y+=50
+        self.map.append(self.player)
+
     def __init__(self):
         pygame.display.init()
         pygame.font.init()
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(gamewin)
         self.money = 0
-        self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
+        #self.background = pygame.transform.scale(pygame.image.load("сетка.png"), (700, 700))
 
         self.background_left = self.rect = pygame.Rect(0, 0, 120, gamewin[1])
         self.background_middle = self.rect = pygame.Rect(120, 0, 500, gamewin[1])
         #self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
 
-        self.player = Area(self.screen,620,100,50,50,None,lambda: None,)
-        self.player.setpic("право.png")
-        self.wall = Area(self.screen,720,100,50,50,None,lambda: None,)
-        self.wall.setpic("wall.jpg")
-        self.fin = Area(self.screen,720,150,50,50,None,lambda :None,)
-        self.fin.setpic("finish.png")
-        self.mone = Area(self.screen,670,150,50,50,None,lambda :None,)
-        self.mone.setpic("монета.png")
-        self.floor = Area(self.screen,720,50,50,50,None,lambda :None,)
-        self.floor.setpic("пол.png")
+        # self.player = Area(self.screen,620,100,50,50,None,lambda: None,)
+        # self.player.setpic("право.png")
+        # self.wall = Area(self.screen,720,100,50,50,None,lambda: None,)
+        # self.wall.setpic("wall.jpg")
+        # self.fin = Area(self.screen,720,150,50,50,None,lambda :None,)
+        # self.fin.setpic("finish.png")
+        #
+        # self.floor = Area(self.screen,720,50,50,50,None,lambda :None,)
+        # self.floor.setpic("пол.png")
+        #self.map =[self.wall,self.fin,self.floor,self.player]
+
+        #self.mone = Area(self.screen, 670, 150, 50, 50, None, lambda: None, )
+        #self.mone.setpic("монета.png")
 
 
         self.direction = 90
@@ -164,8 +223,10 @@ class Game():
         self.buttons =[self.button_forward,self.button_right,self.button_left,self.button_while,self.button_end,self.button_whiletxt, self.button_clear]
         self.buttonswhile =[self.button_whileup,self.button_whiledown]
         self.additional_buttons = [self.startbtn]
-        self.map =[self.mone,self.wall,self.fin,self.floor,self.player]
-
+        self.monee = []
+        self.map = []
+        self.wall =[]
+        self.drawmap(lvl1,670,50)
 
     def loop(self):
         for event in pygame.event.get():
@@ -255,7 +316,7 @@ class Game():
         for button in self.additional_buttons:
             button.draw(30,7)
         self.additional_buttons[0].outline((0,0,0),5)
-        self.screen.blit(self.background, (620, 0))
+        #self.screen.blit(self.background, (620, 0))
 
         pygame.draw.rect(self.screen, (0, 0, 255), self.background_left)
 
@@ -266,30 +327,45 @@ class Game():
         #self.screen.blit(self.player, (self.rect.x, self.rect.y))
         for obj in self.map:
             obj.drawpic()
-        # self.wall.drawpic()
-        # self.player.drawpic()
+        for obj in self.wall:
+            obj.drawpic()
+        for money in self.monee:
+            money.drawpic()
+
+        self.fin.drawpic()
+        self.player.drawpic()
 
         self.clock.tick(40)
         pygame.display.update()
 
     def check(self):
-        if self.player.colliderect(self.wall):
-            self.player.rect.x = 620
-            self.player.rect.y = 100
-            self.show_message("Попробуй снова")
-            time.sleep(2)  # Задержка на 2 секунды
-            self.update()  # Обновляем экран, чтобы убрать сообщение
-            self.player.setpic("право.png")
-            return True
-        elif self.player.colliderect(self.fin):
+        for obj in self.wall:
+            if self.player.colliderect(obj):
+                self.player.rect.x = 620
+                self.player.rect.y = 100
+                self.show_message("Попробуй снова")
+                time.sleep(2)  # Задержка на 2 секунды
+                self.update()  # Обновляем экран, чтобы убрать сообщение
+                self.direction = 0
+                self.rotate(90)
+                return True
+
+        if self.player.colliderect(self.fin) and self.go:
             self.show_message("Win money "+str(self.money))
             time.sleep(2)  # Задержка на 2 секунды
+            self.player.rect.x = 620
+            self.player.rect.y = 100
+            self.direction = 0
+            self.rotate(90)
             self.update()  # Обновляем экран, чтобы убрать сообщение
-            self.player.setpic("право.png")
+
             return True
-        elif self.player.colliderect(self.mone):
-            self.money+=1
-            del self.mone
+        for money in self.monee:
+            if len(self.monee )!=0 and self.player.colliderect(money):
+                self.money+=1
+                self.monee.remove(money)
+                del money
+
 
     def show_message(self, text):
         # Создаём поверхность с сообщением
@@ -315,10 +391,13 @@ class Game():
                 return algoritm
         return  algoritm
     def start(self):
+        self.go = False
         algoritm =  self.conectblock()
 
         x = Cycle(iter(algoritm),1)
         x.function()
+        self.go = True
+        self.check()
 
     def forward(self):
         if self.direction % 360 == 90:
