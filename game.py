@@ -6,11 +6,13 @@ import time
 gamewin = (1320, 700)
 
 class Area():
-  def __init__(self, mw, x, y, width, height, color, function):
+  def __init__(self, mw, x, y, width, height, color, function =lambda:None, pic=None):
       self.rect = pygame.Rect(x, y, width, height) #прямоугольник
       self.fill_color = color
       self.mw = mw
       self.function = function
+      self.pic = pic
+
   def color(self, new_color):
       self.fill_color = new_color
   def fill(self):
@@ -22,6 +24,13 @@ class Area():
 
   def colliderect(self, rect):
       return self.rect.colliderect(rect)
+  def drawpic(self):
+      #self.rect = self.obj.get_rect()
+      self.mw.blit(self.obj, (self.rect.x, self.rect.y))
+  def setpic(self,pic):
+      self.pic = pic
+      self.obj = pygame.transform.scale(pygame.image.load(self.pic), (50, 50))
+
 '''класс надпись'''
 class Label(Area):
   def set_text(self, text, fsize=12, text_color=(0, 0, 0),):
@@ -103,7 +112,15 @@ class Game():
 
         self.background_left = self.rect = pygame.Rect(0, 0, 120, gamewin[1])
         self.background_middle = self.rect = pygame.Rect(120, 0, 500, gamewin[1])
-        self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
+        #self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
+
+        self.player = Area(self.screen,620,100,50,50,None,lambda: None,)
+        self.player.setpic("право.png")
+        self.wall = Area(self.screen,720,100,50,50,None,lambda: None,)
+        self.wall.setpic("wall.jpg")
+        self.fin = Area(self.screen,720,150,50,50,None,lambda :None,)
+        self.fin.setpic("finish.png")
+
         self.direction = 90
 
         self.startbtn = Label(self.screen, 325, 0, 100, 30, (255, 0, 0), self.start)
@@ -117,30 +134,33 @@ class Game():
         self.button_left.set_text("  left")
 
 
-        self.button_while = Label(self.screen, 10, 165, 100, 30, (255, 0, 0), None)
+        self.button_while = Label(self.screen, 10, 165, 100, 30, (255, 0, 0))
         self.button_while.set_text("while")
 
-        self.button_whiletxt = Label(self.screen, self.button_while.rect.x+35, self.button_while.rect.y, 10, 10, self.button_while.fill_color, None, )
+        self.button_whiletxt = Label(self.screen, self.button_while.rect.x+35, self.button_while.rect.y, 10, 10, self.button_while.fill_color )
         self.button_whiletxt.set_text("1")
 
-        self.button_whileup = Label(self.screen, self.button_while.rect.x+80, self.button_while.rect.y, 20, 30, (255, 250, 0),  None,)
+        self.button_whileup = Label(self.screen, self.button_while.rect.x+80, self.button_while.rect.y, 20, 30, (255, 250, 0))
         self.button_whileup.set_text("+")
 
-        self.button_whiledown = Label(self.screen, self.button_while.rect.x, self.button_while.rect.y, 20, 30, (255, 250, 0),  None,)
+        self.button_whiledown = Label(self.screen, self.button_while.rect.x, self.button_while.rect.y, 20, 30, (255, 250, 0)  )
         self.button_whiledown.set_text("−")
 
-        self.button_end = Label(self.screen, 10, 220, 100, 30, (255, 0, 0), None)
+        self.button_end = Label(self.screen, 10, 220, 100, 30, (255, 0, 0) )
         self.button_end.set_text("  end")
 
+        self.button_clear = Label(self.screen, 10, gamewin[1]-50, 100, 30, (255, 0, 0), self.clear)
+        self.button_clear.set_text("clear")
 
-        self.rect = self.player.get_rect()
-        self.rect.x = 620
-        self.rect.y = 100
+        #self.rect = self.player.get_rect()
+        # self.rect.x = 620
+        # self.rect.y = 100
         self.moving = False
         self.movingobj = None
-        self.buttons =[self.button_forward,self.button_right,self.button_left,self.button_while,self.button_end,self.button_whiletxt]
+        self.buttons =[self.button_forward,self.button_right,self.button_left,self.button_while,self.button_end,self.button_whiletxt, self.button_clear]
         self.buttonswhile =[self.button_whileup,self.button_whiledown]
         self.additional_buttons = [self.startbtn]
+        self.map =[self.wall,self.fin,self.player]
 
 
     def loop(self):
@@ -152,9 +172,9 @@ class Game():
                 x,y = event.pos
                 for button in self.additional_buttons:
                     if button.__class__.__name__ == "Whilebut":
-                        if button.button_whileup.collidepoint(x,y):
+                        if button.button_whileup.collidepoint(x, y):
                             button.button_whileup.function()
-                        elif button.button_whiledown.collidepoint(x,y):
+                        elif button.button_whiledown.collidepoint(x, y):
                             button.button_whiledown.function()
 
             if event.type == MOUSEBUTTONDOWN and event.button ==1:
@@ -186,6 +206,9 @@ class Game():
                     button_end = Label(self.screen, 10, 220, 100, 30, (255, 0, 0), lambda: None)
                     button_end.set_text("  end")
                     self.additional_buttons.append(button_end)
+                elif self.button_clear.collidepoint(x,y):
+                    self.button_clear.function()
+
 
                 for button in self.additional_buttons:
                     if button != self.startbtn:
@@ -218,11 +241,9 @@ class Game():
                 self.moving = False
 
         self.update()
-    def wloop (self):
-        pass
 
-
-
+    def clear(self):
+        self.additional_buttons =[self.startbtn]
     def update(self):
 
         pygame.draw.rect(self.screen,(0,255,0),self.background_middle)
@@ -238,8 +259,37 @@ class Game():
             button.draw(30,7)
         for button in self.buttonswhile:
             button.draw(5, 5)
-        self.screen.blit(self.player, (self.rect.x, self.rect.y))
+        #self.screen.blit(self.player, (self.rect.x, self.rect.y))
+        for obj in self.map:
+            obj.drawpic()
+        # self.wall.drawpic()
+        # self.player.drawpic()
+
         self.clock.tick(40)
+        pygame.display.update()
+
+    def check(self):
+        if self.player.colliderect(self.wall):
+            self.player.rect.x = 620
+            self.player.rect.y = 100
+            self.show_message("Попробуй снова")
+            time.sleep(2)  # Задержка на 2 секунды
+            self.update()  # Обновляем экран, чтобы убрать сообщение
+            return True
+        elif self.player.colliderect(self.fin):
+            self.show_message("Win")
+            time.sleep(2)  # Задержка на 2 секунды
+            self.update()  # Обновляем экран, чтобы убрать сообщение
+            return True
+
+    def show_message(self, text):
+        # Создаём поверхность с сообщением
+        font = pygame.font.SysFont('verdana', 50)
+        message = font.render(text, True, (255, 0, 0))  # Красный текст
+        text_rect = message.get_rect(center=(gamewin[0] / 2, gamewin[1] / 2))
+
+        # Отображаем сообщение поверх основного экрана
+        self.screen.blit(message, text_rect)
         pygame.display.update()
 
     def conectblock(self):
@@ -257,15 +307,7 @@ class Game():
         return  algoritm
     def start(self):
         algoritm =  self.conectblock()
-        # i=0
-        # while i <len(algoritm):
-        #     if algoritm[i].text == "while":
-        #         x = Cycle(algoritm[i + 1:], algoritm[i].count)
-        #         i += len(x.res)
-        #         x.function()
-        #     print(algoritm[i].text)
-        #     algoritm[i].function()
-        #     i+=1
+
         x = Cycle(iter(algoritm),1)
         x.function()
 
@@ -283,20 +325,25 @@ class Game():
             x = 0
             y = -1
         for i in range(50):
-            self.rect.x += x
-            self.rect.y += y
+            self.player.rect.x += x
+            self.player.rect.y += y
             self.update()
+        self.check()
         time.sleep(0.3)
     def rotate(self,direction ):
         self.direction += direction
         if self.direction % 360 == 90:
-            self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
+            #self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
+            self.player.setpic("право.png")
         elif self.direction % 360 == 180:
-            self.player = pygame.transform.scale(pygame.image.load("низ.png"), (50, 50))
+            #self.player = pygame.transform.scale(pygame.image.load("низ.png"), (50, 50))
+            self.player.setpic("низ.png")
         elif self.direction % 360 == 270:
-            self.player = pygame.transform.scale(pygame.image.load("лево.png"), (50, 50))
+            #self.player = pygame.transform.scale(pygame.image.load("лево.png"), (50, 50))
+            self.player.setpic("лево.png")
         elif self.direction % 360 == 0:
-            self.player = pygame.transform.scale(pygame.image.load("верх.png"), (50, 50))
+            #self.player = pygame.transform.scale(pygame.image.load("верх.png"), (50, 50))
+            self.player.setpic("верх.png")
         self.update()
 
 
