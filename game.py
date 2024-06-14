@@ -332,14 +332,14 @@ class Game():
         self.additional_buttons =[self.startbtn]
     def update(self):
 
-        pygame.draw.rect(self.screen,(50,55,50),self.background_middle)
+        pygame.draw.rect(self.screen,(30,33,36),self.background_middle)
 
         for button in self.additional_buttons:
             button.draw(30,7)
 
         #self.screen.blit(self.background, (620, 0))
 
-        pygame.draw.rect(self.screen, (0, 0, 255), self.background_left)
+        pygame.draw.rect(self.screen, (56, 69, 73), self.background_left)
 
         for button in self.buttons:
             button.draw(30,7)
@@ -362,7 +362,7 @@ class Game():
     def check(self):
         for obj in self.wall:
             if self.player.colliderect(obj):
-                self.player.rect.x = 620
+                self.player.rect.x = 670
                 self.player.rect.y = 100
                 self.show_message("Попробуй снова")
                 time.sleep(2)  # Задержка на 2 секунды
