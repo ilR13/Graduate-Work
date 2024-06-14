@@ -13,7 +13,7 @@ class Map(Enum):
 
 
 
-lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
+lvl0 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
@@ -27,6 +27,26 @@ lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, M
         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
         [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, ],]
+
+
+
+lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.fin, Map.empty, Map.empty, Map.empty, Map.coin, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall,Map.coin, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.empty, Map.empty, Map.coin,Map.empty, Map.empty, Map.empty, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ],
+        [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall ]]
+
+
+
 
 class GameWidget(QWidget):
     def __init__(self):
@@ -67,27 +87,42 @@ class GameWidget(QWidget):
         layout3.addWidget(button9)
 
         layout4.addWidget(buttontest)
-        layout4.addWidget(buttonlang)
+        #layout4.addWidget(buttonlang)
 
 
         main_layout.addLayout(layout1)
         main_layout.addLayout(layout2)
         main_layout.addLayout(layout3)
         buttontest.clicked.connect(self.test)
+        button1.clicked.connect(self.lvl1)
         self.setLayout(main_layout)
     def test(self):
         #self.closeEvent()
         info = QMessageBox()
-        info.setText("game and level information")
+        info.setText("Для завершення рівня потрібно дійти до фінішу, монетки не обов'язкові. Керування циклом відбувається на праву кнопку миші")
         info.exec()
         self.hide()
 
         Game = game.Game()
-        Game.drawmap(lvl1, 670, 50)
-        while True:
+        Game.drawmap(lvl0, 670, 50)
+        while Game.p:
             Game.loop()
 
+        self.show()
 
+
+    def lvl1(self):
+        info = QMessageBox()
+        info.setText("Для завершення рівня потрібно дійти до фінішу, монетки не обов'язкові. Керування циклом відбувається на праву кнопку миші")
+        info.exec()
+        self.hide()
+
+        Game = game.Game()
+        Game.drawmap(lvl1, 770, 150)
+        while Game.p:
+            Game.loop()
+
+        self.show()
 
 
     def resizeEvent(self, event):

@@ -1,9 +1,11 @@
+import random
 from enum import Enum
 import pygame
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONDOWN
 from pygame.event import Event, post
 from random import randint
 import time
+
 gamewin = (1320, 700)
 
 # class Map(Enum):
@@ -110,7 +112,7 @@ class Whilebut(Label):
         self.button_whiledown.rect.y = self.rect.y
 
 
-        self.button_whiletxt.draw(30,7)
+        self.button_whiletxt.draw(35,7)
         self.button_whileup.draw(5,5)
         self.button_whiledown.draw(5,5)
 
@@ -126,7 +128,7 @@ class Cycle():
         res = []
 
         for i in buttons:
-            if i.text == "while":
+            if i.text == "repeat":
                 x = Cycle(buttons, i.count)
                 res.append(x)
 
@@ -140,7 +142,9 @@ class Cycle():
 class Game():
     def drawmap(self, lvl, x=0,y=0):
         self.player = Area(self.screen, x, y, 50, 50, None, lambda: None, )
-        self.player.setpic("право.png")
+        self.player.setpic("роботправо.png")
+        self.x = x
+        self.y = y
         x,y = self.background_middle.topright
         for row in lvl:
             for block in row:
@@ -165,6 +169,7 @@ class Game():
         self.map.append(self.player)
 
     def __init__(self):
+        self.p = True
         pygame.display.init()
         pygame.font.init()
         self.clock = pygame.time.Clock()
@@ -211,10 +216,10 @@ class Game():
         self.button_left.setpic("оранжевый.png", 100, 30)
 
         self.button_while = Label(self.screen, 10, 165, 100, 30, (255, 0, 0))
-        self.button_while.set_text("while")
+        self.button_while.set_text("repeat")
         self.button_while.setpic("фиолетовый.png", 100, 30)
 
-        self.button_whiletxt = Label(self.screen, self.button_while.rect.x+35, self.button_while.rect.y, 10, 10, self.button_while.fill_color )
+        self.button_whiletxt = Label(self.screen, self.button_while.rect.x+40, self.button_while.rect.y, 10, 10, self.button_while.fill_color )
         self.button_whiletxt.set_text("1")
 
         self.button_whileup = Label(self.screen, self.button_while.rect.x+80, self.button_while.rect.y, 20, 30, (255, 250, 0))
@@ -245,8 +250,10 @@ class Game():
     def loop(self):
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
-                exit()
+                self.p = False
+                #pygame.quit()
+
+
             if event.type == MOUSEBUTTONDOWN and event.button == 3:
                 x,y = event.pos
                 for button in self.additional_buttons:
@@ -281,7 +288,7 @@ class Game():
 
                 elif self.button_while.collidepoint(x,y):
                     button_while = Whilebut(self.screen, 10, 165, 100, 30, (255, 0, 0), lambda: None)
-                    button_while.set_text("while")
+                    button_while.set_text("repeat")
                     button_while.setpic("фиолетовый.png", 100, 30)
                     self.additional_buttons.append(button_while)
 
@@ -362,9 +369,10 @@ class Game():
     def check(self):
         for obj in self.wall:
             if self.player.colliderect(obj):
-                self.player.rect.x = 670
-                self.player.rect.y = 100
-                self.show_message("Попробуй снова")
+                self.player.rect.x = self.x
+                self.player.rect.y = self.y
+                message =["Спробуй знову","Ти можеш краще","Давай ще раз",]
+                self.show_message(message[random.randint(0,2)])
                 time.sleep(2)  # Задержка на 2 секунды
                 self.update()  # Обновляем экран, чтобы убрать сообщение
                 self.direction = 0
@@ -374,8 +382,8 @@ class Game():
         if self.player.colliderect(self.fin) and self.go:
             self.show_message("Win money "+str(self.money))
             time.sleep(2)  # Задержка на 2 секунды
-            self.player.rect.x = 620
-            self.player.rect.y = 100
+            self.player.rect.x = self.x
+            self.player.rect.y = self.y
             self.direction = 0
             self.rotate(90)
             self.update()  # Обновляем экран, чтобы убрать сообщение
@@ -387,14 +395,26 @@ class Game():
                 self.monee.remove(money)
                 del money
 
-
     def show_message(self, text):
         # Создаём поверхность с сообщением
         font = pygame.font.SysFont('verdana', 50)
         message = font.render(text, True, (255, 0, 0))  # Красный текст
         text_rect = message.get_rect(center=(gamewin[0] / 2, gamewin[1] / 2))
 
-        # Отображаем сообщение поверх основного экрана
+        # Определяем размеры и позицию прямоугольника для фона
+        padding = 20  # Отступы вокруг текста
+        background_rect = pygame.Rect(
+            text_rect.left - padding,
+            text_rect.top - padding,
+            text_rect.width + 2 * padding,
+            text_rect.height + 2 * padding
+        )
+
+        # Рисуем прямоугольник с фоном
+        background_color = (255, 255, 255)  # Черный цвет фона
+        pygame.draw.rect(self.screen, background_color, background_rect)
+
+        # Отображаем текст поверх прямоугольника
         self.screen.blit(message, text_rect)
         pygame.display.update()
 
@@ -443,16 +463,16 @@ class Game():
         self.direction += direction
         if self.direction % 360 == 90:
             #self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
-            self.player.setpic("право.png")
+            self.player.setpic("роботправо.png")
         elif self.direction % 360 == 180:
             #self.player = pygame.transform.scale(pygame.image.load("низ.png"), (50, 50))
-            self.player.setpic("низ.png")
+            self.player.setpic("роботниз.png")
         elif self.direction % 360 == 270:
             #self.player = pygame.transform.scale(pygame.image.load("лево.png"), (50, 50))
-            self.player.setpic("лево.png")
+            self.player.setpic("роботлево.png")
         elif self.direction % 360 == 0:
             #self.player = pygame.transform.scale(pygame.image.load("верх.png"), (50, 50))
-            self.player.setpic("верх.png")
+            self.player.setpic("роботверх.png")
         self.update()
 
 #
