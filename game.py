@@ -1,42 +1,12 @@
 import random
-from enum import Enum
 import pygame
 from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONDOWN
-from pygame.event import Event, post
-from random import randint
 import time
-
+# розмір екрана гри
 gamewin = (1320, 700)
 
-# class Map(Enum):
-#     empty = "пол.png"
-#     coin = "монета.png"
-#     wall = "wall.jpg"
-#     fin = "finish.png"
-#
-#
-#
-# lvl1 = [[Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall,],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.coin, Map.empty, Map.fin, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.wall],
-#         [Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, Map.wall, ],]
 
-
-
-
-
-
-
+# Класс для створення прямокутників (хітбоксів)
 class Area():
   def __init__(self, mw, x, y, width, height, color, function =lambda:None, pic=None):
       self.rect = pygame.Rect(x, y, width, height) #прямоугольник
@@ -45,26 +15,37 @@ class Area():
       self.function = function
       self.pic = pic
 
-
+  # метод для зміни кольорів
   def color(self, new_color):
       self.fill_color = new_color
+
+  # метод для зафарбовування прямокутника
   def fill(self):
       pygame.draw.rect(self.mw, self.fill_color, self.rect)
+
+  # створення контура
   def outline(self, frame_color, thickness): #обводка существующего прямоугольника
       pygame.draw.rect(self.mw, frame_color, self.rect, thickness)
+
+  # перевірка натискання мишкою
   def collidepoint(self, x, y):
       return self.rect.collidepoint(x, y)
 
+  #перевірка дотику інших прямокутників
   def colliderect(self, rect):
       return self.rect.colliderect(rect)
+
+  # відображення картинок у прямокутнику
   def drawpic(self):
       #self.rect = self.obj.get_rect()
       self.mw.blit(self.obj, (self.rect.x, self.rect.y))
+
+  #встановлення картинки для прямокутника
   def setpic(self,pic,widht=50,height=50):
       self.pic = pic
       self.obj = pygame.transform.scale(pygame.image.load(self.pic), (widht, height))
 
-'''класс надпись'''
+# класс для створення надписів
 class Label(Area):
   def set_text(self, text, fsize=12, text_color=(0, 0, 0),):
       self.text = text
@@ -79,7 +60,7 @@ class Label(Area):
           pass
       self.mw.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))
 
-
+# класс для створення кнопки циклу
 class Whilebut(Label):
     def __init__(self, mw, x, y, width, height, color, function,):
         super().__init__( mw, x, y, width, height, color, function)
@@ -116,6 +97,7 @@ class Whilebut(Label):
         self.button_whileup.draw(5,5)
         self.button_whiledown.draw(5,5)
 
+# класс для обробки циклів створених гравцем
 class Cycle():
     def __init__(self, buttons, iters):
         self.iters = iters
@@ -139,7 +121,10 @@ class Cycle():
 
 
         return res
+
+# основний ігровий класс
 class Game():
+    # метод для відображення рівнів
     def drawmap(self, lvl, x=0,y=0):
         self.player = Area(self.screen, x, y, 50, 50, None, lambda: None, )
         self.player.setpic("роботправо.png")
@@ -168,6 +153,7 @@ class Game():
             y+=50
         self.map.append(self.player)
 
+    # ініціалізація основних параметрів гри
     def __init__(self):
         self.p = True
         pygame.display.init()
@@ -179,8 +165,8 @@ class Game():
 
         self.background_left = self.rect = pygame.Rect(0, 0, 120, gamewin[1])
         self.background_middle = self.rect = pygame.Rect(120, 0, 500, gamewin[1])
-        #self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
-
+        # self.player = pygame.transform.scale(pygame.image.load("право.png"), (50, 50))
+        #
         # self.player = Area(self.screen,620,100,50,50,None,lambda: None,)
         # self.player.setpic("право.png")
         # self.wall = Area(self.screen,720,100,50,50,None,lambda: None,)
@@ -190,10 +176,10 @@ class Game():
         #
         # self.floor = Area(self.screen,720,50,50,50,None,lambda :None,)
         # self.floor.setpic("пол.png")
-        #self.map =[self.wall,self.fin,self.floor,self.player]
-
-        #self.mone = Area(self.screen, 670, 150, 50, 50, None, lambda: None, )
-        #self.mone.setpic("монета.png")
+        # self.map =[self.wall,self.fin,self.floor,self.player]
+        #
+        # self.mone = Area(self.screen, 670, 150, 50, 50, None, lambda: None, )
+        # self.mone.setpic("монета.png")
 
 
         self.direction = 90
@@ -246,8 +232,9 @@ class Game():
         self.map = []
         self.wall =[]
 
-
+    # основний ігровий цикл
     def loop(self):
+        # перевірка натискання кнопки закриття гри
         for event in pygame.event.get():
             if event.type == QUIT:
                 self.p = False
