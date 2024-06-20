@@ -4,7 +4,8 @@ from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONDOWN
 import time
 # розмір екрана гри
 gamewin = (1320, 700)
-game_ower =False
+game_over = False
+
 # Класс для створення прямокутників (хітбоксів)
 class Area():
   def __init__(self, mw, x, y, width, height, color, function =lambda:None, pic=None):
@@ -104,7 +105,7 @@ class Cycle():
     def function(self):
         for j in range(self.iters):
             for i in self.res:
-                if not(game_ower):
+                if not(game_over):
                     i.function()
 
     def parse(self, buttons):
@@ -155,6 +156,7 @@ class Game():
     # ініціалізація основних параметрів гри
     def __init__(self):
         self.p = True
+        self.go = False
         pygame.display.init()
         pygame.font.init()
         self.clock = pygame.time.Clock()
@@ -355,14 +357,9 @@ class Game():
     def check(self):
         for obj in self.wall:
             if self.player.colliderect(obj):
-                self.player.rect.x = self.x
-                self.player.rect.y = self.y
-                message =["Спробуй знову","Ти можеш краще","Давай ще раз",]
-                self.show_message(message[random.randint(0,2)])
-                time.sleep(2)  # Задержка на 2 секунды
-                self.update()  # Обновляем экран, чтобы убрать сообщение
-                self.direction = 0
-                self.rotate(90)
+                global game_over
+                game_over =True
+                self.go = False
                 return True
 
         if self.player.colliderect(self.fin) and self.go:
@@ -375,20 +372,17 @@ class Game():
             self.update()  # Обновляем экран, чтобы убрать сообщение
 
             return True
+
+        elif not(self.player.colliderect(self.fin)) and self.go:
+            game_over = True
+            self.go = False
+            return True
+
         for money in self.monee:
             if len(self.monee )!=0 and self.player.colliderect(money):
                 self.money+=1
                 self.monee.remove(money)
                 del money
-        if not(self.player.colliderect(self.fin)) and self.go:
-            self.player.rect.x = self.x
-            self.player.rect.y = self.y
-            message = ["Спробуй знову", "Ти можеш краще", "Давай ще раз", ]
-            self.show_message(message[random.randint(0, 2)])
-            time.sleep(2)  # Задержка на 2 секунды
-            self.update()  # Обновляем экран, чтобы убрать сообщение
-            self.direction = 0
-            self.rotate(90)
     def show_message(self, text):
         # Создаём поверхность с сообщением
         font = pygame.font.SysFont('verdana', 50)
@@ -427,12 +421,23 @@ class Game():
         return  algoritm
     def start(self):
         self.go = False
+        global game_over
+        game_over = False
         algoritm =  self.conectblock()
 
         x = Cycle(iter(algoritm),1)
         x.function()
         self.go = True
         self.check()
+        if game_over:
+            self.player.rect.x = self.x
+            self.player.rect.y = self.y
+            message = ["Спробуй знову", "Ти можеш краще", "Давай ще раз", ]
+            self.show_message(message[random.randint(0, 2)])
+            time.sleep(2)  # Задержка на 2 секунды
+            self.update()  # Обновляем экран, чтобы убрать сообщение
+            self.direction = 0
+            self.rotate(90)
 
 
     def forward(self):
