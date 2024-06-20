@@ -49,7 +49,7 @@ lvl1 = [
 ]
 
 # Клас основного віджета гри
-class GameWidget(QWidget):
+class Menu(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -144,6 +144,6 @@ def start():
     pass
 
 app = QApplication([])  # Ініціалізація додатку
-w = GameWidget()  # Створення віджета гри
+w = Menu()  # Створення віджета гри
 w.show()  # Показ віджета
 app.exec_()  # Запуск основного циклу додатку

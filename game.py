@@ -4,8 +4,7 @@ from pygame.locals import QUIT, USEREVENT, MOUSEBUTTONDOWN
 import time
 # розмір екрана гри
 gamewin = (1320, 700)
-
-
+game_ower =False
 # Класс для створення прямокутників (хітбоксів)
 class Area():
   def __init__(self, mw, x, y, width, height, color, function =lambda:None, pic=None):
@@ -105,7 +104,9 @@ class Cycle():
     def function(self):
         for j in range(self.iters):
             for i in self.res:
-                i.function()
+                if not(game_ower):
+                    i.function()
+
     def parse(self, buttons):
         res = []
 
@@ -118,8 +119,6 @@ class Cycle():
                 return res
             else:
                 res.append(i)
-
-
         return res
 
 # основний ігровий класс
@@ -381,12 +380,20 @@ class Game():
                 self.money+=1
                 self.monee.remove(money)
                 del money
-
+        if not(self.player.colliderect(self.fin)) and self.go:
+            self.player.rect.x = self.x
+            self.player.rect.y = self.y
+            message = ["Спробуй знову", "Ти можеш краще", "Давай ще раз", ]
+            self.show_message(message[random.randint(0, 2)])
+            time.sleep(2)  # Задержка на 2 секунды
+            self.update()  # Обновляем экран, чтобы убрать сообщение
+            self.direction = 0
+            self.rotate(90)
     def show_message(self, text):
         # Создаём поверхность с сообщением
         font = pygame.font.SysFont('verdana', 50)
         message = font.render(text, True, (255, 0, 0))  # Красный текст
-        text_rect = message.get_rect(center=(gamewin[0] / 2, gamewin[1] / 2))
+        text_rect = message.get_rect(center=(gamewin[0] / 2-250, gamewin[1] / 2))
 
         # Определяем размеры и позицию прямоугольника для фона
         padding = 20  # Отступы вокруг текста
@@ -426,6 +433,7 @@ class Game():
         x.function()
         self.go = True
         self.check()
+
 
     def forward(self):
         if self.direction % 360 == 90:
